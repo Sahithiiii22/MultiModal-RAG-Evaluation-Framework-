@@ -1,0 +1,340 @@
+import React, { useState } from 'react';
+import { Search, Sparkles, CheckSquare, Square, Play, Sliders, ChevronDown, ChevronUp, Shield, Zap, BookOpen, Scale } from 'lucide-react';
+import { MetricWeights } from '../types';
+
+interface QuerySectionProps {
+  onRunQuery: (query: string, selectedArchitectures: string[], metricWeights?: MetricWeights) => void;
+  isLoading: boolean;
+}
+
+const PRESET_QUERIES = [
+  "What is the education and CGPA of Sahithi Tarigoppula from the resume?",
+  "Compare Self-RAG and Adaptive RAG in terms of latency, faithfulness, and context filtering.",
+  "Explain step-by-step how Agentic RAG plans and executes multi-tool searches.",
+  "What metrics are used to measure context relevance, context precision, and faithfulness?"
+];
+
+const ALL_ARCHITECTURES = ["Basic RAG", "Self-RAG", "Adaptive RAG", "Agentic RAG"];
+
+export const DEFAULT_WEIGHTS: MetricWeights = {
+  faithfulness: 0.25,
+  answer_relevance: 0.20,
+  context_relevance: 0.20,
+  correctness: 0.15,
+  context_recall: 0.10,
+  efficiency: 0.10
+};
+
+const PRESET_WEIGHTS_MAP = {
+  balanced: {
+    name: "Balanced Standard",
+    icon: Scale,
+    color: "bg-indigo-50 text-indigo-900 border-indigo-300",
+    weights: { faithfulness: 0.25, answer_relevance: 0.20, context_relevance: 0.20, correctness: 0.15, context_recall: 0.10, efficiency: 0.10 }
+  },
+  hallucination_zero: {
+    name: "Zero Hallucination",
+    icon: Shield,
+    color: "bg-emerald-50 text-emerald-900 border-emerald-300",
+    weights: { faithfulness: 0.50, answer_relevance: 0.15, context_relevance: 0.20, correctness: 0.10, context_recall: 0.05, efficiency: 0.00 }
+  },
+  speed: {
+    name: "Ultra-Fast Speed",
+    icon: Zap,
+    color: "bg-amber-50 text-amber-900 border-amber-300",
+    weights: { faithfulness: 0.20, answer_relevance: 0.20, context_relevance: 0.10, correctness: 0.10, context_recall: 0.00, efficiency: 0.40 }
+  },
+  deep_research: {
+    name: "Deep Multi-Hop",
+    icon: BookOpen,
+    color: "bg-purple-50 text-purple-900 border-purple-300",
+    weights: { faithfulness: 0.20, answer_relevance: 0.20, context_relevance: 0.15, correctness: 0.25, context_recall: 0.20, efficiency: 0.00 }
+  }
+};
+
+export const QuerySection: React.FC<QuerySectionProps> = ({ onRunQuery, isLoading }) => {
+  const [query, setQuery] = useState('');
+  const [selectedArchs, setSelectedArchs] = useState<string[]>(ALL_ARCHITECTURES);
+  const [showWeightSliders, setShowWeightSliders] = useState(false);
+  const [activePreset, setActivePreset] = useState<string>('balanced');
+  const [weights, setWeights] = useState<MetricWeights>(DEFAULT_WEIGHTS);
+
+  const toggleArch = (arch: string) => {
+    if (selectedArchs.includes(arch)) {
+      if (selectedArchs.length > 1) {
+        setSelectedArchs(selectedArchs.filter((a) => a !== arch));
+      }
+    } else {
+      setSelectedArchs([...selectedArchs, arch]);
+    }
+  };
+
+  const selectAll = () => setSelectedArchs(ALL_ARCHITECTURES);
+
+  const applyPreset = (presetKey: string) => {
+    setActivePreset(presetKey);
+    const preset = PRESET_WEIGHTS_MAP[presetKey as keyof typeof PRESET_WEIGHTS_MAP];
+    if (preset) {
+      setWeights(preset.weights);
+    }
+  };
+
+  const updateWeight = (key: keyof MetricWeights, val: number) => {
+    setActivePreset('custom');
+    setWeights(prev => ({
+      ...prev,
+      [key]: val
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim() && !isLoading) {
+      onRunQuery(query.trim(), selectedArchs, weights);
+    }
+  };
+
+  return (
+    <div className="glass rounded-2xl p-6 shadow-sm border border-slate-200/90 bg-white mb-6 text-left">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex items-center justify-between">
+          <label htmlFor="rag-query-input" className="text-sm font-bold text-slate-900 flex items-center space-x-2">
+            <Search className="h-4 w-4 text-indigo-600" />
+            <span>Research &amp; Benchmark Query</span>
+          </label>
+          <span className="text-xs text-slate-500 font-medium">
+            Cross-evaluate across chosen RAG engines
+          </span>
+        </div>
+
+        {/* Large Text Area */}
+        <div className="relative">
+          <textarea
+            id="rag-query-input"
+            rows={3}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Enter a question to query your indexed documents and benchmark RAG pipelines..."
+            className="w-full bg-slate-50 text-slate-900 placeholder-slate-400 rounded-xl p-4 text-sm border border-slate-200 focus:border-indigo-500 focus:bg-white focus:outline-none transition-all resize-none shadow-inner"
+            disabled={isLoading}
+          />
+
+          <button
+            type="submit"
+            disabled={isLoading || !query.trim()}
+            className="absolute right-3 bottom-3 flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 disabled:opacity-50 text-white font-semibold text-sm shadow-md shadow-indigo-200 transition-all cursor-pointer"
+          >
+            {isLoading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                <span>Evaluating...</span>
+              </>
+            ) : (
+              <>
+                <Play className="h-4 w-4 fill-white" />
+                <span>Run Benchmark</span>
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Architecture Toggles & Metric Presets Toggle */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-slate-500 font-bold mr-1">RAG Architectures:</span>
+            {ALL_ARCHITECTURES.map((arch) => {
+              const isSelected = selectedArchs.includes(arch);
+              let activeColor = 'bg-sky-50 border-sky-300 text-sky-900';
+              if (arch === 'Self-RAG') activeColor = 'bg-emerald-50 border-emerald-300 text-emerald-900';
+              if (arch === 'Adaptive RAG') activeColor = 'bg-indigo-50 border-indigo-300 text-indigo-900';
+              if (arch === 'Agentic RAG') activeColor = 'bg-purple-50 border-purple-300 text-purple-900';
+
+              return (
+                <button
+                  key={arch}
+                  type="button"
+                  onClick={() => toggleArch(arch)}
+                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                    isSelected
+                      ? activeColor + ' shadow-2xs'
+                      : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  {isSelected ? (
+                    <CheckSquare className="h-3.5 w-3.5 text-indigo-600" />
+                  ) : (
+                    <Square className="h-3.5 w-3.5 text-slate-400" />
+                  )}
+                  <span>{arch}</span>
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              onClick={selectAll}
+              className="text-xs text-indigo-600 hover:text-indigo-800 hover:underline font-bold ml-2 cursor-pointer"
+            >
+              Select All (4)
+            </button>
+          </div>
+
+          {/* Metric Weights Drawer Toggle */}
+          <button
+            type="button"
+            onClick={() => setShowWeightSliders(!showWeightSliders)}
+            className="flex items-center space-x-1.5 text-xs text-slate-700 hover:text-indigo-900 bg-slate-50 hover:bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors font-semibold cursor-pointer"
+          >
+            <Sliders className="h-3.5 w-3.5 text-indigo-600" />
+            <span>Judge Weights ({activePreset === 'custom' ? 'Custom' : PRESET_WEIGHTS_MAP[activePreset as keyof typeof PRESET_WEIGHTS_MAP]?.name})</span>
+            {showWeightSliders ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+          </button>
+        </div>
+
+        {/* Priority Presets & Sliders Panel */}
+        {showWeightSliders && (
+          <div className="p-4 bg-slate-50/80 border border-slate-200 rounded-xl space-y-3.5 animate-slideUp">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2.5">
+              <span className="text-xs font-bold text-slate-800">Select Evaluation Priority Preset:</span>
+              <div className="flex flex-wrap items-center gap-1.5">
+                {Object.entries(PRESET_WEIGHTS_MAP).map(([key, config]) => {
+                  const Icon = config.icon;
+                  const isCur = activePreset === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => applyPreset(key)}
+                      className={`flex items-center space-x-1 px-2.5 py-1 rounded-md text-xs font-semibold border transition-all cursor-pointer ${
+                        isCur ? `${config.color} shadow-2xs` : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+                      }`}
+                    >
+                      <Icon className="h-3 w-3" />
+                      <span>{config.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Metric Sliders Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+              <div>
+                <div className="flex justify-between text-xs text-slate-700 font-medium mb-1">
+                  <span>Faithfulness:</span>
+                  <span className="font-mono font-bold text-emerald-700">{(weights.faithfulness * 100).toFixed(0)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={weights.faithfulness}
+                  onChange={(e) => updateWeight('faithfulness', parseFloat(e.target.value))}
+                  className="w-full accent-indigo-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer"
+                />
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs text-slate-700 font-medium mb-1">
+                  <span>Answer Relevance:</span>
+                  <span className="font-mono font-bold text-indigo-700">{(weights.answer_relevance * 100).toFixed(0)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={weights.answer_relevance}
+                  onChange={(e) => updateWeight('answer_relevance', parseFloat(e.target.value))}
+                  className="w-full accent-indigo-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer"
+                />
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs text-slate-700 font-medium mb-1">
+                  <span>Context Relevance:</span>
+                  <span className="font-mono font-bold text-purple-700">{(weights.context_relevance * 100).toFixed(0)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={weights.context_relevance}
+                  onChange={(e) => updateWeight('context_relevance', parseFloat(e.target.value))}
+                  className="w-full accent-indigo-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer"
+                />
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs text-slate-700 font-medium mb-1">
+                  <span>Synthesis Correctness:</span>
+                  <span className="font-mono font-bold text-amber-700">{(weights.correctness * 100).toFixed(0)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={weights.correctness}
+                  onChange={(e) => updateWeight('correctness', parseFloat(e.target.value))}
+                  className="w-full accent-indigo-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer"
+                />
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs text-slate-700 font-medium mb-1">
+                  <span>Context Recall:</span>
+                  <span className="font-mono font-bold text-blue-700">{(weights.context_recall * 100).toFixed(0)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={weights.context_recall}
+                  onChange={(e) => updateWeight('context_recall', parseFloat(e.target.value))}
+                  className="w-full accent-indigo-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer"
+                />
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs text-slate-700 font-medium mb-1">
+                  <span>Efficiency / Latency:</span>
+                  <span className="font-mono font-bold text-cyan-700">{(weights.efficiency * 100).toFixed(0)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={weights.efficiency}
+                  onChange={(e) => updateWeight('efficiency', parseFloat(e.target.value))}
+                  className="w-full accent-indigo-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Suggested Queries */}
+        <div className="pt-2 flex items-center space-x-2 overflow-x-auto">
+          <Sparkles className="h-3.5 w-3.5 text-amber-500 flex-shrink-0" />
+          <span className="text-xs text-slate-500 font-bold whitespace-nowrap">Suggested:</span>
+          <div className="flex items-center space-x-2">
+            {PRESET_QUERIES.map((q, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setQuery(q)}
+                className="text-xs bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 text-slate-700 hover:text-indigo-900 px-3 py-1 rounded-lg transition-all whitespace-nowrap cursor-pointer shadow-2xs font-medium"
+              >
+                {q}
+              </button>
+            ))}
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+};
