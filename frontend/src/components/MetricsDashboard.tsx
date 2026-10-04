@@ -4,8 +4,8 @@ import {
   Radar, Legend, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, Cell,
 } from 'recharts';
-import { RAGExecutionResult, RAGEvaluationMetrics, FinalJudgeDecision, PipelineExecutionResponse } from '../types';
-import { Trophy, Clock, Cpu, BarChart2, Target, CheckCircle2, XCircle, Download, FileText, Sparkles } from 'lucide-react';
+import { RAGExecutionResult, RAGEvaluationMetrics, FinalJudgeDecision, PipelineExecutionResponse, RouterStats } from '../types';
+import { Trophy, Clock, Cpu, BarChart2, Target, CheckCircle2, XCircle, Download, FileText, Sparkles, Zap, BrainCircuit, Activity } from 'lucide-react';
 import { InsightsPanel } from './InsightsPanel';
 import { exportComparisonToCSV, exportComparisonToMarkdown } from '../services/exportUtils';
 
@@ -14,6 +14,7 @@ interface MetricsDashboardProps {
   evaluations: Record<string, RAGEvaluationMetrics>;
   judge:       FinalJudgeDecision;
   fullResponse?: PipelineExecutionResponse;
+  routerStats?:  RouterStats | null;
 }
 
 // Pastel-compatible architecture colors
@@ -243,6 +244,67 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({
           </div>
         )}
       </div>
+
+      {/* ── LEARNED ML ROUTER OBSERVATORY CARD ── */}
+      {routerStats && (
+        <div className="glass rounded-2xl p-5 bg-gradient-to-r from-indigo-50/70 via-white to-purple-50/70 border border-indigo-200/80 shadow-xs space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-indigo-100 pb-2.5">
+            <div className="flex items-center space-x-2.5">
+              <div className="p-2 rounded-xl bg-indigo-600 text-white shadow-xs">
+                <BrainCircuit className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>Learned ML RAG Router Observatory</span>
+                  <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.2 rounded-full">
+                    Self-Improving
+                  </span>
+                </h3>
+                <p className="text-[11px] text-slate-500">
+                  Continuous online learning model trained directly on the Final Judge's multi-metric decisions.
+                </p>
+              </div>
+            </div>
+            <div className="text-[10px] font-mono font-medium text-slate-500 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
+              {routerStats.classifier_model_type || 'RandomForest'}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+            <div className="p-3 bg-white/90 rounded-xl border border-slate-200/80 space-y-0.5">
+              <div className="text-[10px] text-slate-500 font-semibold uppercase">Judge Agreement Rate</div>
+              <div className="text-lg font-black text-indigo-700 font-mono">
+                {(routerStats.judge_agreement_rate * 100).toFixed(1)}%
+              </div>
+              <div className="text-[10px] text-slate-500">vs Final Judge top choice</div>
+            </div>
+
+            <div className="p-3 bg-white/90 rounded-xl border border-slate-200/80 space-y-0.5">
+              <div className="text-[10px] text-slate-500 font-semibold uppercase">Avg Latency Saved</div>
+              <div className="text-lg font-black text-emerald-700 font-mono">
+                {(routerStats.avg_latency_saved_ms / 1000).toFixed(2)}s
+              </div>
+              <div className="text-[10px] text-slate-500">per auto-routed query</div>
+            </div>
+
+            <div className="p-3 bg-white/90 rounded-xl border border-slate-200/80 space-y-0.5">
+              <div className="text-[10px] text-slate-500 font-semibold uppercase">Token &amp; Cost Savings</div>
+              <div className="text-lg font-black text-amber-700 font-mono">
+                ~{routerStats.estimated_token_savings_pct.toFixed(0)}%
+              </div>
+              <div className="text-[10px] text-slate-500">1 pipeline instead of 4</div>
+            </div>
+
+            <div className="p-3 bg-white/90 rounded-xl border border-slate-200/80 space-y-0.5">
+              <div className="text-[10px] text-slate-500 font-semibold uppercase">Training Samples</div>
+              <div className="text-lg font-black text-slate-900 font-mono">
+                {routerStats.total_training_samples}
+              </div>
+              <div className="text-[10px] text-slate-500">{routerStats.feature_count} features extracted</div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── 4 ARCHITECTURE CARDS GRID ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

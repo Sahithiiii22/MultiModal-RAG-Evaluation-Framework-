@@ -155,3 +155,37 @@ export interface BenchmarkRequest {
   architectures_to_run?: string[];
   metric_weights?: MetricWeights;
 }
+
+export interface RouterPrediction {
+  predicted_pipeline: string;
+  confidence: number;
+  probabilities: Record<string, number>;
+  routing_time_ms: number;
+  features: Record<string, number>;
+  estimated_token_savings_pct: number;
+}
+
+export interface RoutedQueryResponse {
+  query_id: string;
+  query: string;
+  answer: string;
+  sources: DocumentChunk[];
+  selected_pipeline: string;
+  router_prediction: RouterPrediction;
+  execution_time_s: number;
+  latency_saved_estimate_s: number;
+  tokens_saved_estimate: number;
+  is_demo_mode: boolean;
+  timestamp: string;
+}
+
+export interface RouterStats {
+  total_training_samples: number;
+  total_routed_queries: number;
+  judge_agreement_rate: number;
+  avg_latency_saved_ms: number;
+  estimated_token_savings_pct: number;
+  classifier_model_type: string;
+  feature_count: number;
+  features_used: string[];
+}

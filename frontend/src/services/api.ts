@@ -1,5 +1,6 @@
 import {
-  PipelineExecutionResponse, DocumentMetadata, BenchmarkResponse, MetricWeights
+  PipelineExecutionResponse, DocumentMetadata, BenchmarkResponse, MetricWeights,
+  RoutedQueryResponse, RouterStats
 } from '../types';
 
 const API_BASE = '/api';
@@ -8,6 +9,25 @@ export const api = {
   async getHealth() {
     const res = await fetch(`${API_BASE}/health`);
     if (!res.ok) throw new Error('Health check failed');
+    return res.json();
+  },
+
+  async getRouterStats(): Promise<RouterStats> {
+    const res = await fetch(`${API_BASE}/router/stats`);
+    if (!res.ok) throw new Error('Failed to fetch router stats');
+    return res.json();
+  },
+
+  async executeRoutedQuery(query: string, topK: number = 6): Promise<RoutedQueryResponse> {
+    const res = await fetch(`${API_BASE}/query/routed`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, top_k: topK }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'Routed query execution failed');
+    }
     return res.json();
   },
 

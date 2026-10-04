@@ -1,0 +1,588 @@
+{
+  "samples": [
+    {
+      "query": "What is the author's email address?",
+      "features": {
+        "length_chars": 35.0,
+        "word_count": 7.0,
+        "avg_word_len": 4.0,
+        "is_factoid": 1.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 1.0,
+        "retrieval_top1_score": 0.2277,
+        "retrieval_top3_mean_score": 0.17946666666666666,
+        "retrieval_score_spread": 0.04318829573957381
+      },
+      "target_pipeline": "Basic RAG",
+      "timestamp": 1791131868.807788,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "What is the title of the document?",
+      "features": {
+        "length_chars": 34.0,
+        "word_count": 7.0,
+        "avg_word_len": 3.857142857142857,
+        "is_factoid": 1.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 1.0,
+        "retrieval_top1_score": 0.3296,
+        "retrieval_top3_mean_score": 0.26843333333333336,
+        "retrieval_score_spread": 0.0768836494682423
+      },
+      "target_pipeline": "Basic RAG",
+      "timestamp": 1791131868.8174675,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "What year was Python created?",
+      "features": {
+        "length_chars": 29.0,
+        "word_count": 5.0,
+        "avg_word_len": 4.8,
+        "is_factoid": 1.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 2.0,
+        "has_numbers": 0.0,
+        "question_mark": 1.0,
+        "retrieval_top1_score": 0.114,
+        "retrieval_top3_mean_score": 0.073,
+        "retrieval_score_spread": 0.051749396131742446
+      },
+      "target_pipeline": "Basic RAG",
+      "timestamp": 1791131868.8223608,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Define artificial intelligence in simple terms.",
+      "features": {
+        "length_chars": 47.0,
+        "word_count": 6.0,
+        "avg_word_len": 6.833333333333333,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.0369,
+        "retrieval_top3_mean_score": 0.026766666666666664,
+        "retrieval_score_spread": 0.00832879876626209
+      },
+      "target_pipeline": "Basic RAG",
+      "timestamp": 1791131868.825433,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "What is the CGPA mentioned in the resume?",
+      "features": {
+        "length_chars": 41.0,
+        "word_count": 8.0,
+        "avg_word_len": 4.125,
+        "is_factoid": 1.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 2.0,
+        "has_numbers": 0.0,
+        "question_mark": 1.0,
+        "retrieval_top1_score": 0.3015,
+        "retrieval_top3_mean_score": 0.23453333333333334,
+        "retrieval_score_spread": 0.07281695468013537
+      },
+      "target_pipeline": "Basic RAG",
+      "timestamp": 1791131868.831559,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Who founded Microsoft?",
+      "features": {
+        "length_chars": 22.0,
+        "word_count": 3.0,
+        "avg_word_len": 6.333333333333333,
+        "is_factoid": 1.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 2.0,
+        "has_numbers": 0.0,
+        "question_mark": 1.0,
+        "retrieval_top1_score": 0.02,
+        "retrieval_top3_mean_score": 0.0097,
+        "retrieval_score_spread": 0.008175981082822211
+      },
+      "target_pipeline": "Basic RAG",
+      "timestamp": 1791131868.8390605,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "What is machine learning?",
+      "features": {
+        "length_chars": 25.0,
+        "word_count": 4.0,
+        "avg_word_len": 5.25,
+        "is_factoid": 1.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 1.0,
+        "retrieval_top1_score": 0.1912,
+        "retrieval_top3_mean_score": 0.14463333333333336,
+        "retrieval_score_spread": 0.04465902919778809
+      },
+      "target_pipeline": "Basic RAG",
+      "timestamp": 1791131868.8433633,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "What is the file size of the document?",
+      "features": {
+        "length_chars": 38.0,
+        "word_count": 8.0,
+        "avg_word_len": 3.75,
+        "is_factoid": 1.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 1.0,
+        "retrieval_top1_score": 0.2817,
+        "retrieval_top3_mean_score": 0.2564,
+        "retrieval_score_spread": 0.030629724125430847
+      },
+      "target_pipeline": "Basic RAG",
+      "timestamp": 1791131868.8502748,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Verify if the revenue increased in Q3 based strictly on the text.",
+      "features": {
+        "length_chars": 65.0,
+        "word_count": 12.0,
+        "avg_word_len": 4.416666666666667,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 2.0,
+        "has_numbers": 1.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.2235,
+        "retrieval_top3_mean_score": 0.19496666666666665,
+        "retrieval_score_spread": 0.021390080774872165
+      },
+      "target_pipeline": "Self-RAG",
+      "timestamp": 1791131868.8557448,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Are there any medical contraindications mentioned for this drug?",
+      "features": {
+        "length_chars": 64.0,
+        "word_count": 9.0,
+        "avg_word_len": 6.111111111111111,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 1.0,
+        "retrieval_top1_score": 0.1705,
+        "retrieval_top3_mean_score": 0.09813333333333335,
+        "retrieval_score_spread": 0.051283027298404386
+      },
+      "target_pipeline": "Self-RAG",
+      "timestamp": 1791131868.857235,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Is there any factual evidence of security breaches in the log?",
+      "features": {
+        "length_chars": 62.0,
+        "word_count": 11.0,
+        "avg_word_len": 4.636363636363637,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 1.0,
+        "retrieval_top1_score": 0.1847,
+        "retrieval_top3_mean_score": 0.13626666666666667,
+        "retrieval_score_spread": 0.05331881052269973
+      },
+      "target_pipeline": "Self-RAG",
+      "timestamp": 1791131868.8650382,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Check if the statement about compliance is faithful to the policy document.",
+      "features": {
+        "length_chars": 75.0,
+        "word_count": 12.0,
+        "avg_word_len": 5.25,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.2375,
+        "retrieval_top3_mean_score": 0.18610000000000002,
+        "retrieval_score_spread": 0.06876879137128022
+      },
+      "target_pipeline": "Self-RAG",
+      "timestamp": 1791131868.8650382,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Find and verify the exact legal clause regarding termination.",
+      "features": {
+        "length_chars": 61.0,
+        "word_count": 9.0,
+        "avg_word_len": 5.777777777777778,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.1702,
+        "retrieval_top3_mean_score": 0.146,
+        "retrieval_score_spread": 0.03102815925359844
+      },
+      "target_pipeline": "Self-RAG",
+      "timestamp": 1791131868.8751512,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Is the cited statistic on inflation supported by the document?",
+      "features": {
+        "length_chars": 62.0,
+        "word_count": 10.0,
+        "avg_word_len": 5.2,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 1.0,
+        "retrieval_top1_score": 0.2264,
+        "retrieval_top3_mean_score": 0.17466666666666664,
+        "retrieval_score_spread": 0.04616999987967174
+      },
+      "target_pipeline": "Self-RAG",
+      "timestamp": 1791131868.8835738,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Confirm whether the user permissions grant administrative access.",
+      "features": {
+        "length_chars": 65.0,
+        "word_count": 8.0,
+        "avg_word_len": 7.125,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.0904,
+        "retrieval_top3_mean_score": 0.07313333333333333,
+        "retrieval_score_spread": 0.017006926693425694
+      },
+      "target_pipeline": "Self-RAG",
+      "timestamp": 1791131868.8876185,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Summarize the key points and findings of the strivers sheet.",
+      "features": {
+        "length_chars": 60.0,
+        "word_count": 10.0,
+        "avg_word_len": 5.0,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 1.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.2649,
+        "retrieval_top3_mean_score": 0.21356666666666668,
+        "retrieval_score_spread": 0.05748909075255545
+      },
+      "target_pipeline": "Adaptive RAG",
+      "timestamp": 1791131868.8915174,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Provide an overview of deep learning techniques and architectures.",
+      "features": {
+        "length_chars": 66.0,
+        "word_count": 9.0,
+        "avg_word_len": 6.333333333333333,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 1.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.1547,
+        "retrieval_top3_mean_score": 0.12216666666666669,
+        "retrieval_score_spread": 0.03694115440655434
+      },
+      "target_pipeline": "Adaptive RAG",
+      "timestamp": 1791131868.8974545,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Summarize the main sections of the uploaded report.",
+      "features": {
+        "length_chars": 51.0,
+        "word_count": 8.0,
+        "avg_word_len": 5.375,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 1.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.2281,
+        "retrieval_top3_mean_score": 0.17286666666666664,
+        "retrieval_score_spread": 0.046518407348298395
+      },
+      "target_pipeline": "Adaptive RAG",
+      "timestamp": 1791131868.900863,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "What are the advantages and disadvantages of microservices?",
+      "features": {
+        "length_chars": 59.0,
+        "word_count": 8.0,
+        "avg_word_len": 6.375,
+        "is_factoid": 1.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 1.0,
+        "retrieval_top1_score": 0.3287,
+        "retrieval_top3_mean_score": 0.23279999999999998,
+        "retrieval_score_spread": 0.08194685269530898
+      },
+      "target_pipeline": "Adaptive RAG",
+      "timestamp": 1791131868.9112635,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Explain the core features of the framework and its modules.",
+      "features": {
+        "length_chars": 59.0,
+        "word_count": 10.0,
+        "avg_word_len": 4.9,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 1.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.3315,
+        "retrieval_top3_mean_score": 0.2511,
+        "retrieval_score_spread": 0.08512688568640737
+      },
+      "target_pipeline": "Adaptive RAG",
+      "timestamp": 1791131868.918512,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Summarize the education and work experience from the profile.",
+      "features": {
+        "length_chars": 61.0,
+        "word_count": 9.0,
+        "avg_word_len": 5.777777777777778,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 1.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.3229,
+        "retrieval_top3_mean_score": 0.2472,
+        "retrieval_score_spread": 0.08198158329771389
+      },
+      "target_pipeline": "Adaptive RAG",
+      "timestamp": 1791131868.9325435,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Give a structured summary of the quantum computing document.",
+      "features": {
+        "length_chars": 60.0,
+        "word_count": 9.0,
+        "avg_word_len": 5.666666666666667,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 1.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.1723,
+        "retrieval_top3_mean_score": 0.12436666666666667,
+        "retrieval_score_spread": 0.048976819914005126
+      },
+      "target_pipeline": "Adaptive RAG",
+      "timestamp": 1791131868.9419029,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Compare Self-RAG and Adaptive RAG step-by-step in terms of latency, faithfulness, and context filtering.",
+      "features": {
+        "length_chars": 104.0,
+        "word_count": 17.0,
+        "avg_word_len": 5.0,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 1.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 4.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.2703,
+        "retrieval_top3_mean_score": 0.1904,
+        "retrieval_score_spread": 0.08401122940813725
+      },
+      "target_pipeline": "Agentic RAG",
+      "timestamp": 1791131868.949181,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Explain how Agentic RAG plans, invokes tools, and synthesizes evidence across multiple passages.",
+      "features": {
+        "length_chars": 96.0,
+        "word_count": 13.0,
+        "avg_word_len": 6.230769230769231,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 1.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 3.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.1843,
+        "retrieval_top3_mean_score": 0.1321,
+        "retrieval_score_spread": 0.07164109621346303
+      },
+      "target_pipeline": "Agentic RAG",
+      "timestamp": 1791131868.9565253,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Analyze the relationship between learning rate, batch size, and loss convergence during neural network training.",
+      "features": {
+        "length_chars": 112.0,
+        "word_count": 15.0,
+        "avg_word_len": 6.333333333333333,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 1.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.133,
+        "retrieval_top3_mean_score": 0.10953333333333333,
+        "retrieval_score_spread": 0.03255255579657132
+      },
+      "target_pipeline": "Agentic RAG",
+      "timestamp": 1791131868.965358,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Compare the financial performance of company A versus company B across all quarterly reports.",
+      "features": {
+        "length_chars": 93.0,
+        "word_count": 14.0,
+        "avg_word_len": 5.642857142857143,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 1.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.1095,
+        "retrieval_top3_mean_score": 0.08456666666666666,
+        "retrieval_score_spread": 0.03406604696109538
+      },
+      "target_pipeline": "Agentic RAG",
+      "timestamp": 1791131868.9721925,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Deconstruct the multi-step algorithm used for graph shortest paths and explain every phase.",
+      "features": {
+        "length_chars": 91.0,
+        "word_count": 14.0,
+        "avg_word_len": 5.5,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 1.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.196,
+        "retrieval_top3_mean_score": 0.17893333333333336,
+        "retrieval_score_spread": 0.023292535761960796
+      },
+      "target_pipeline": "Agentic RAG",
+      "timestamp": 1791131868.982453,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Synthesize the conclusions from the three separate research papers regarding LLM hallucinations.",
+      "features": {
+        "length_chars": 96.0,
+        "word_count": 12.0,
+        "avg_word_len": 7.0,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 1.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 2.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.1269,
+        "retrieval_top3_mean_score": 0.10886666666666667,
+        "retrieval_score_spread": 0.016105968527916053
+      },
+      "target_pipeline": "Agentic RAG",
+      "timestamp": 1791131868.9900062,
+      "source": "baseline_seed"
+    },
+    {
+      "query": "Why did the system latency spike during high concurrency and how can we mitigate it?",
+      "features": {
+        "length_chars": 84.0,
+        "word_count": 15.0,
+        "avg_word_len": 4.6,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 1.0,
+        "is_summarization": 0.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 1.0,
+        "retrieval_top1_score": 0.287,
+        "retrieval_top3_mean_score": 0.18339999999999998,
+        "retrieval_score_spread": 0.08004153088657578
+      },
+      "target_pipeline": "Agentic RAG",
+      "timestamp": 1791131868.9989269,
+      "source": "baseline_seed"
+    }
+  ],
+  "total_routed_queries": 0,
+  "correct_agreements": 0,
+  "total_latency_saved_ms": 0.0,
+  "total_tokens_saved": 0
+}

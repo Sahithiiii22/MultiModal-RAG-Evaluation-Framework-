@@ -7,7 +7,7 @@ import { MetricWeights } from '../types';
 import { api } from '../services/api';
 
 interface QuerySectionProps {
-  onRunQuery: (query: string, selectedArchitectures: string[], metricWeights?: MetricWeights) => void;
+  onRunQuery: (query: string, selectedArchitectures: string[], metricWeights?: MetricWeights, mode?: 'routed' | 'benchmark') => void;
   isLoading: boolean;
   onDocumentUploaded?: () => void;
 }
@@ -60,6 +60,7 @@ const PRESET_WEIGHTS_MAP = {
 export const QuerySection: React.FC<QuerySectionProps> = ({ onRunQuery, isLoading, onDocumentUploaded }) => {
   const [query, setQuery] = useState('');
   const [selectedArchs, setSelectedArchs] = useState<string[]>(ALL_ARCHITECTURES);
+  const [executionMode, setExecutionMode] = useState<'routed' | 'benchmark'>('benchmark');
   const [showWeightSliders, setShowWeightSliders] = useState(false);
   const [activePreset, setActivePreset] = useState<string>('balanced');
   const [weights, setWeights] = useState<MetricWeights>(DEFAULT_WEIGHTS);
@@ -132,21 +133,51 @@ export const QuerySection: React.FC<QuerySectionProps> = ({ onRunQuery, isLoadin
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim() && !isLoading && !isUploadingFile) {
-      onRunQuery(query.trim(), selectedArchs, weights);
+      onRunQuery(query.trim(), selectedArchs, weights, executionMode);
     }
   };
 
   return (
     <div className="glass rounded-2xl p-6 shadow-sm border border-slate-200/90 bg-white mb-6 text-left">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex items-center justify-between">
-          <label htmlFor="rag-query-input" className="text-sm font-bold text-slate-900 flex items-center space-x-2">
-            <Search className="h-4 w-4 text-indigo-600" />
-            <span>Multimodal Query &amp; Architecture Evaluator</span>
-          </label>
-          <span className="text-xs text-slate-500 font-medium">
-            Runs across Basic RAG, Self-RAG, Adaptive RAG &amp; Agentic RAG
-          </span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b border-slate-100">
+          <div>
+            <label htmlFor="rag-query-input" className="text-sm font-bold text-slate-900 flex items-center space-x-2">
+              <Search className="h-4 w-4 text-indigo-600" />
+              <span>Multimodal Query &amp; Architecture Evaluator</span>
+            </label>
+            <span className="text-xs text-slate-500 font-medium">
+              Execute with Learned ML Router or Full Parallel Benchmark
+            </span>
+          </div>
+
+          {/* Mode Switcher Tabs */}
+          <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => setExecutionMode('routed')}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                executionMode === 'routed'
+                  ? 'bg-white text-indigo-700 shadow-2xs font-bold border border-slate-200'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Zap className="h-3.5 w-3.5 text-amber-500" />
+              <span>Smart Auto-Routed (Fast &amp; 75% Savings)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setExecutionMode('benchmark')}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                executionMode === 'benchmark'
+                  ? 'bg-white text-indigo-700 shadow-2xs font-bold border border-slate-200'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Scale className="h-3.5 w-3.5 text-indigo-600" />
+              <span>Full 4-RAG Benchmark</span>
+            </button>
+          </div>
         </div>
 
         {/* Attachment Pill if present */}

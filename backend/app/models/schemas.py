@@ -149,3 +149,33 @@ class TextInputRequest(BaseModel):
     title: str
     content: str
 
+class RouterPrediction(BaseModel):
+    predicted_pipeline: str
+    confidence: float
+    probabilities: Dict[str, float]
+    routing_time_ms: float
+    features: Dict[str, float]
+    estimated_token_savings_pct: float
+
+class RoutedQueryResponse(BaseModel):
+    query_id: str
+    query: str
+    answer: str
+    sources: List[Dict[str, Any]] = Field(default_factory=list)
+    selected_pipeline: str
+    router_prediction: RouterPrediction
+    execution_time_s: float
+    latency_saved_estimate_s: float
+    tokens_saved_estimate: int
+    is_demo_mode: bool = False
+    timestamp: str
+
+class RouterStatsResponse(BaseModel):
+    total_training_samples: int
+    total_routed_queries: int
+    judge_agreement_rate: float
+    avg_latency_saved_ms: float
+    estimated_token_savings_pct: float
+    classifier_model_type: str
+    feature_count: int
+    features_used: List[str]
