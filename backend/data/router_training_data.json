@@ -579,10 +579,90 @@
       "target_pipeline": "Agentic RAG",
       "timestamp": 1791131868.9989269,
       "source": "baseline_seed"
+    },
+    {
+      "query": "Summarize the main details and key insights from IoT Protocols.docx",
+      "features": {
+        "length_chars": 67.0,
+        "word_count": 11.0,
+        "avg_word_len": 5.181818181818182,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 1.0,
+        "entity_capital_count": 3.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.349,
+        "retrieval_top3_mean_score": 0.3268,
+        "retrieval_score_spread": 0.021062921608045414
+      },
+      "target_pipeline": "Adaptive RAG",
+      "timestamp": 1791132705.3615022,
+      "source": "judge_feedback"
+    },
+    {
+      "query": "Summarize the key information from the uploaded document.",
+      "features": {
+        "length_chars": 57.0,
+        "word_count": 8.0,
+        "avg_word_len": 6.125,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 1.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.3953,
+        "retrieval_top3_mean_score": 0.327,
+        "retrieval_score_spread": 0.05334622760795743
+      },
+      "target_pipeline": "Adaptive RAG",
+      "timestamp": 1791132762.2845755,
+      "source": "judge_feedback"
+    },
+    {
+      "query": "Summarize the key information from the uploaded document.",
+      "features": {
+        "length_chars": 57.0,
+        "word_count": 8.0,
+        "avg_word_len": 6.125,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 1.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.3953,
+        "retrieval_top3_mean_score": 0.327,
+        "retrieval_score_spread": 0.05334622760795743
+      },
+      "target_pipeline": "Adaptive RAG",
+      "timestamp": 1791132793.1667075,
+      "source": "judge_feedback"
+    },
+    {
+      "query": "Summarize the strivers sheet",
+      "features": {
+        "length_chars": 28.0,
+        "word_count": 4.0,
+        "avg_word_len": 6.25,
+        "is_factoid": 0.0,
+        "is_reasoning_multihop": 0.0,
+        "is_summarization": 1.0,
+        "entity_capital_count": 1.0,
+        "has_numbers": 0.0,
+        "question_mark": 0.0,
+        "retrieval_top1_score": 0.2014,
+        "retrieval_top3_mean_score": 0.18553333333333333,
+        "retrieval_score_spread": 0.01392415965946319
+      },
+      "target_pipeline": "Adaptive RAG",
+      "timestamp": 1791133342.898312,
+      "source": "judge_feedback"
     }
   ],
-  "total_routed_queries": 0,
-  "correct_agreements": 0,
-  "total_latency_saved_ms": 0.0,
-  "total_tokens_saved": 0
+  "total_routed_queries": 4,
+  "correct_agreements": 4,
+  "total_latency_saved_ms": 11657.25,
+  "total_tokens_saved": 53615
 }

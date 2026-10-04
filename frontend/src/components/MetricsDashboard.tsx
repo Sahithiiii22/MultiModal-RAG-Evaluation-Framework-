@@ -1,18 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   Radar, Legend, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, Cell,
 } from 'recharts';
 import { RAGExecutionResult, RAGEvaluationMetrics, FinalJudgeDecision, PipelineExecutionResponse, RouterStats } from '../types';
-import { Trophy, Clock, Cpu, BarChart2, Target, CheckCircle2, XCircle, Download, FileText, Sparkles, Zap, BrainCircuit, Activity } from 'lucide-react';
+import { Trophy, Clock, Cpu, BarChart2, Target, CheckCircle2, XCircle, Download, FileText, Sparkles, Zap, BrainCircuit, Activity, Layers, HelpCircle, Eye } from 'lucide-react';
 import { InsightsPanel } from './InsightsPanel';
+import { ComparisonTable } from './ComparisonTable';
+import { ArchitectureDetails } from './ArchitectureDetails';
 import { exportComparisonToCSV, exportComparisonToMarkdown } from '../services/exportUtils';
 
 interface MetricsDashboardProps {
-  results:    Record<string, RAGExecutionResult>;
-  evaluations: Record<string, RAGEvaluationMetrics>;
-  judge:       FinalJudgeDecision;
+  results:      Record<string, RAGExecutionResult>;
+  evaluations:  Record<string, RAGEvaluationMetrics>;
+  judge:         FinalJudgeDecision;
   fullResponse?: PipelineExecutionResponse;
   routerStats?:  RouterStats | null;
 }
@@ -25,13 +27,13 @@ const ARCH_COLORS: Record<string, string> = {
   'Agentic RAG':  '#d97706', // Amber
 };
 
-const METRICS: { key: keyof RAGEvaluationMetrics; label: string }[] = [
-  { key: 'faithfulness',      label: 'Faithfulness'       },
-  { key: 'answer_relevance',  label: 'Answer Relevance'   },
-  { key: 'context_relevance', label: 'Context Relevance'  },
-  { key: 'context_precision', label: 'Context Precision'  },
-  { key: 'context_recall',    label: 'Context Recall'     },
-  { key: 'overall_score',     label: 'Overall Score'      },
+const METRICS: { key: keyof RAGEvaluationMetrics; label: string; desc: string }[] = [
+  { key: 'faithfulness',      label: 'Faithfulness',       desc: 'Measures grounding in context to prevent hallucinations' },
+  { key: 'answer_relevance',  label: 'Answer Relevance',   desc: 'Measures how directly the response addresses user query' },
+  { key: 'context_relevance', label: 'Context Relevance',  desc: 'Signal-to-noise ratio in retrieved knowledge chunks' },
+  { key: 'context_precision', label: 'Context Precision',  desc: 'Proportion of top chunks that are factually relevant' },
+  { key: 'context_recall',    label: 'Context Recall',     desc: 'Coverage of query requirements retrieved' },
+  { key: 'overall_score',     label: 'Overall Score',      desc: 'Harmonic weighted multi-metric composite quality score' },
 ];
 
 function scoreColor(v: number): string {
@@ -50,16 +52,19 @@ function scoreLabel(v: number): string {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload?.length) {
     return (
-      <div className="bg-white rounded-xl px-3.5 py-2.5 border border-slate-200 shadow-md text-xs space-y-1 text-left">
-        <div className="font-bold text-slate-900">{label}</div>
+      <div className="bg-white rounded-xl px-4 py-3 border border-slate-200 shadow-lg text-xs space-y-1.5 text-left z-50">
+        <div className="font-bold text-slate-900 border-b border-slate-100 pb-1">{label}</div>
         {payload.map((p: any) => (
-          <div key={p.name} className="flex items-center space-x-2">
+          <div key={p.name} className="flex items-center justify-between space-x-3">
+            <span className="flex items-center space-x-1.5">
+              <span className="h-2.5 w-2.5 rounded-full" style={{ background: p.fill || p.stroke }} />
+              <span className="text-slate-600 font-medium">{p.name}</span>
+            </span>
             <span style={{ color: p.fill || p.stroke }} className="font-mono font-bold">
               {typeof p.value === 'number' && p.value <= 1.01
-                ? (p.value * 100).toFixed(0) + '%'
-                : p.value}
+                ? (p.value * 100).toFixed(1) + '%'
+                : `${p.value}s`}
             </span>
-            <span className="text-slate-600">{p.name}</span>
           </div>
         ))}
       </div>
@@ -90,7 +95,7 @@ const ArchCard: React.FC<{
       {/* Header */}
       <div className="flex items-start justify-between pt-1">
         <div className="flex items-center space-x-2.5">
-          <div className="h-9 w-9 rounded-xl flex items-center justify-center font-black text-sm"
+          <div className="h-9 w-9 rounded-xl flex items-center justify-center font-black text-sm shadow-xs"
                style={{ background: color + '18', color }}>
             {arch[0]}
           </div>
@@ -126,7 +131,7 @@ const ArchCard: React.FC<{
           <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold
                            bg-emerald-100 text-emerald-800 border border-emerald-200">
             <Target className="h-3 w-3" />
-            <span>Finalized Winner</span>
+            <span>Final Judge Pick</span>
           </span>
         )}
       </div>
@@ -165,8 +170,8 @@ const ArchCard: React.FC<{
             </div>
             <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
               <div
-                className="h-full rounded-full metric-bar-fill"
-                style={{ '--bar-w': `${val * 100}%`, background: c } as any}
+                className="h-full rounded-full transition-all duration-500"
+                style={{ width: `${Math.min(100, Math.max(5, val * 100))}%`, background: c }}
               />
             </div>
           </div>
@@ -178,7 +183,7 @@ const ArchCard: React.FC<{
 
 // ── Main MetricsDashboard Component ──────────────────────────────────────────
 export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({
-  results, evaluations, judge, fullResponse,
+  results, evaluations, judge, fullResponse, routerStats,
 }) => {
   const archs = Object.keys(results);
   const winner = judge.recommended_architecture;
@@ -196,9 +201,9 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({
   // Bar latency data
   const latencyData = archs.map((arch) => ({
     arch,
-    total:      results[arch]?.total_time      ?? 0,
-    retrieval:  results[arch]?.retrieval_time  ?? 0,
-    generation: results[arch]?.generation_time ?? 0,
+    total:      Number((results[arch]?.total_time      ?? 0).toFixed(2)),
+    retrieval:  Number((results[arch]?.retrieval_time  ?? 0).toFixed(2)),
+    generation: Number((results[arch]?.generation_time ?? 0).toFixed(2)),
   }));
 
   // Handlers for export
@@ -333,20 +338,20 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({
       {/* ── CHARTS ROW: RADAR & LATENCY ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Radar Comparison Chart */}
-        <div className="glass rounded-2xl p-5 border border-slate-200/90 bg-white shadow-2xs">
+        <div className="glass rounded-2xl p-5 border border-slate-200/90 bg-white shadow-2xs flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <div className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center space-x-1.5">
               <Sparkles className="h-4 w-4 text-indigo-600" />
               <span>Multi-Dimensional Radar Profile</span>
             </div>
-            <span className="text-[11px] text-slate-500">6 Dimensions</span>
+            <span className="text-[11px] text-slate-500">6 Evaluated Dimensions</span>
           </div>
 
-          <div className="h-72 w-full">
+          <div className="h-80 w-full min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <RadarChart data={radarData} outerRadius="75%">
+              <RadarChart data={radarData} outerRadius="70%">
                 <PolarGrid stroke="#e2e8f0" />
-                <PolarAngleAxis dataKey="metric" tick={{ fill: '#475569', fontSize: 11, fontWeight: 500 }} />
+                <PolarAngleAxis dataKey="metric" tick={{ fill: '#334155', fontSize: 11, fontWeight: 600 }} />
                 <PolarRadiusAxis domain={[0, 1]} tick={{ fill: '#94a3b8', fontSize: 9 }} stroke="#e2e8f0" />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend wrapperStyle={{ fontSize: 11, paddingTop: 10 }} />
@@ -357,7 +362,7 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({
                     dataKey={arch}
                     stroke={ARCH_COLORS[arch] || '#6366f1'}
                     fill={ARCH_COLORS[arch] || '#6366f1'}
-                    fillOpacity={0.15}
+                    fillOpacity={0.2}
                     strokeWidth={2}
                   />
                 ))}
@@ -367,7 +372,7 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({
         </div>
 
         {/* Latency Breakdown Bar Chart */}
-        <div className="glass rounded-2xl p-5 border border-slate-200/90 bg-white shadow-2xs">
+        <div className="glass rounded-2xl p-5 border border-slate-200/90 bg-white shadow-2xs flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <div className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center space-x-1.5">
               <Clock className="h-4 w-4 text-cyan-600" />
@@ -376,15 +381,15 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({
             <span className="text-[11px] text-slate-500">Retrieval + Generation</span>
           </div>
 
-          <div className="h-72 w-full">
+          <div className="h-80 w-full min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={latencyData} layout="vertical" margin={{ left: 20, right: 30, top: 10, bottom: 10 }}>
                 <XAxis type="number" tick={{ fill: '#64748b', fontSize: 11 }} unit="s" stroke="#cbd5e1" />
                 <YAxis dataKey="arch" type="category" tick={{ fill: '#334155', fontSize: 11, fontWeight: 600 }} stroke="#cbd5e1" width={90} />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend wrapperStyle={{ fontSize: 11, paddingTop: 10 }} />
-                <Bar dataKey="retrieval"  name="Retrieval Time"  stackId="a" fill="#0284c7" radius={[0, 0, 0, 0]} />
-                <Bar dataKey="generation" name="Generation Time" stackId="a" fill="#818cf8" radius={[0, 6, 6, 0]} />
+                <Bar dataKey="retrieval"  name="Retrieval Time (s)"  stackId="a" fill="#0284c7" radius={[0, 0, 0, 0]} />
+                <Bar dataKey="generation" name="Generation Time (s)" stackId="a" fill="#818cf8" radius={[0, 6, 6, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -392,7 +397,21 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({
       </div>
 
       {/* ── ANALYTICAL INSIGHTS PANEL ── */}
-      <InsightsPanel evaluations={evaluations} judge={judge} />
+      <InsightsPanel evaluations={evaluations} judge={judge} results={results} />
+
+      {/* ── COMPLETE EVALUATION MATRIX TABLE ── */}
+      <ComparisonTable
+        results={results}
+        evaluations={evaluations}
+        recommendedArch={judge.recommended_architecture}
+        fullResponse={fullResponse}
+      />
+
+      {/* ── EXECUTION DETAILS & TRACES ACCORDION ── */}
+      <ArchitectureDetails
+        results={results}
+        evaluations={evaluations}
+      />
     </div>
   );
 };

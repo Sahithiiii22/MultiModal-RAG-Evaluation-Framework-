@@ -27,6 +27,7 @@ export function App() {
   const [documents, setDocuments]         = useState<DocumentMetadata[]>([]);
   const [isDemoMode, setIsDemoMode]       = useState(false);
   const [error, setError]                 = useState<string | null>(null);
+  const [historyList, setHistoryList]     = useState<PipelineExecutionResponse[]>([]);
   const [metricWeights]                   = useState<MetricWeights>(DEFAULT_WEIGHTS);
   
   // State for citation inspector in routed mode
@@ -43,6 +44,14 @@ export function App() {
   useEffect(() => {
     if (activeTab === 'metrics') {
       loadRouterStats();
+      api.getHistory().then((list) => {
+        if (list && list.length > 0) {
+          setHistoryList(list);
+          if (!currentResult) {
+            setCurrentResult(list[0]);
+          }
+        }
+      }).catch(console.error);
     }
   }, [activeTab]);
 
@@ -52,6 +61,12 @@ export function App() {
       setIsDemoMode(health.llm_provider === 'demo');
       const docs = await api.getDocuments();
       setDocuments(docs);
+      
+      // Auto-load latest query result from history if available
+      const historyList = await api.getHistory();
+      if (historyList && historyList.length > 0 && !currentResult) {
+        setCurrentResult(historyList[0]);
+      }
     } catch (err) {
       console.error('Failed to load health and docs:', err);
     }
@@ -406,22 +421,45 @@ export function App() {
           <div className="space-y-6">
             {currentResult ? (
               <div className="space-y-6 animate-slideUp">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-left">
-                  <div>
-                    <span className="text-[11px] font-bold text-indigo-600 uppercase tracking-wider">
-                      Evaluation Analytics &amp; Radar Observatory
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-left">
+                  <div className="space-y-1">
+                    <span className="text-[11px] font-bold text-indigo-600 uppercase tracking-wider flex items-center gap-1.5">
+                      <BarChart2 className="h-3.5 w-3.5" />
+                      <span>Evaluation Analytics &amp; Radar Observatory</span>
                     </span>
-                    <h2 className="text-base font-bold text-slate-900 mt-0.5 truncate max-w-2xl">
+                    <h2 className="text-base font-bold text-slate-900 truncate max-w-2xl">
                       Query: &ldquo;{currentResult.query}&rdquo;
                     </h2>
                   </div>
 
-                  <button
-                    onClick={() => setActiveTab('workspace')}
-                    className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 transition-colors cursor-pointer self-start sm:self-auto"
-                  >
-                    <span>&larr; Back to Query Workspace</span>
-                  </button>
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    {historyList.length > 1 && (
+                      <div className="flex items-center space-x-2">
+                        <label className="text-xs text-slate-500 font-medium whitespace-nowrap hidden sm:inline">Inspecting Run:</label>
+                        <select
+                          value={currentResult?.execution_id || ''}
+                          onChange={(e) => {
+                            const found = historyList.find(h => h.execution_id === e.target.value);
+                            if (found) setCurrentResult(found);
+                          }}
+                          className="text-xs font-semibold text-slate-800 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-400 cursor-pointer max-w-xs truncate"
+                        >
+                          {historyList.map((item, i) => (
+                            <option key={item.execution_id || i} value={item.execution_id}>
+                              {item.query.length > 35 ? item.query.substring(0, 35) + '...' : item.query} ({item.final_judge.recommended_architecture})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
+                    <button
+                      onClick={() => setActiveTab('workspace')}
+                      className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 transition-colors cursor-pointer"
+                    >
+                      <span>&larr; Back to Query</span>
+                    </button>
+                  </div>
                 </div>
 
                 <MetricsDashboard
