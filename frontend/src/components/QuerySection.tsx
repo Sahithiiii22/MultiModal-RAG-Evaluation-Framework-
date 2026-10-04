@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
-import { Search, Sparkles, CheckSquare, Square, Play, Sliders, ChevronDown, ChevronUp, Shield, Zap, BookOpen, Scale } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { 
+  Search, Sparkles, CheckSquare, Square, Play, Sliders, ChevronDown, ChevronUp, 
+  Shield, Zap, BookOpen, Scale, Paperclip, FileText, Image as ImageIcon, X, CheckCircle2, Loader2 
+} from 'lucide-react';
 import { MetricWeights } from '../types';
+import { api } from '../services/api';
 
 interface QuerySectionProps {
   onRunQuery: (query: string, selectedArchitectures: string[], metricWeights?: MetricWeights) => void;
   isLoading: boolean;
+  onDocumentUploaded?: () => void;
 }
 
 const PRESET_QUERIES = [
-  "What is the education and CGPA of Sahithi Tarigoppula from the resume?",
+  "Summarize the key information from the uploaded document.",
   "Compare Self-RAG and Adaptive RAG in terms of latency, faithfulness, and context filtering.",
   "Explain step-by-step how Agentic RAG plans and executes multi-tool searches.",
   "What metrics are used to measure context relevance, context precision, and faithfulness?"
@@ -52,12 +57,19 @@ const PRESET_WEIGHTS_MAP = {
   }
 };
 
-export const QuerySection: React.FC<QuerySectionProps> = ({ onRunQuery, isLoading }) => {
+export const QuerySection: React.FC<QuerySectionProps> = ({ onRunQuery, isLoading, onDocumentUploaded }) => {
   const [query, setQuery] = useState('');
   const [selectedArchs, setSelectedArchs] = useState<string[]>(ALL_ARCHITECTURES);
   const [showWeightSliders, setShowWeightSliders] = useState(false);
   const [activePreset, setActivePreset] = useState<string>('balanced');
   const [weights, setWeights] = useState<MetricWeights>(DEFAULT_WEIGHTS);
+  
+  // Multimodal Attachment State
+  const [attachedFile, setAttachedFile] = useState<File | null>(null);
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
+  const [uploadSuccessMsg, setUploadSuccessMsg] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const toggleArch = (arch: string) => {
     if (selectedArchs.includes(arch)) {
@@ -87,9 +99,39 @@ export const QuerySection: React.FC<QuerySectionProps> = ({ onRunQuery, isLoadin
     }));
   };
 
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setAttachedFile(file);
+    setIsUploadingFile(true);
+    setUploadError(null);
+    setUploadSuccessMsg(null);
+
+    try {
+      const res = await api.uploadDocument(file);
+      setUploadSuccessMsg(`Indexed "${file.name}" (${res.chunks_created} chunks extracted)`);
+      if (onDocumentUploaded) onDocumentUploaded();
+      if (!query.trim()) {
+        setQuery(`Summarize the main details and key insights from ${file.name}`);
+      }
+    } catch (err: any) {
+      setUploadError(err.message || 'Failed to upload document');
+    } finally {
+      setIsUploadingFile(false);
+    }
+  };
+
+  const clearAttachment = () => {
+    setAttachedFile(null);
+    setUploadSuccessMsg(null);
+    setUploadError(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim() && !isLoading) {
+    if (query.trim() && !isLoading && !isUploadingFile) {
       onRunQuery(query.trim(), selectedArchs, weights);
     }
   };
@@ -100,28 +142,84 @@ export const QuerySection: React.FC<QuerySectionProps> = ({ onRunQuery, isLoadin
         <div className="flex items-center justify-between">
           <label htmlFor="rag-query-input" className="text-sm font-bold text-slate-900 flex items-center space-x-2">
             <Search className="h-4 w-4 text-indigo-600" />
-            <span>Research &amp; Benchmark Query</span>
+            <span>Multimodal Query &amp; Architecture Evaluator</span>
           </label>
           <span className="text-xs text-slate-500 font-medium">
-            Cross-evaluate across chosen RAG engines
+            Runs across Basic RAG, Self-RAG, Adaptive RAG &amp; Agentic RAG
           </span>
         </div>
 
-        {/* Large Text Area */}
+        {/* Attachment Pill if present */}
+        {attachedFile && (
+          <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-indigo-50/80 border border-indigo-200 text-xs">
+            <div className="flex items-center space-x-2">
+              {isUploadingFile ? (
+                <Loader2 className="h-4 w-4 text-indigo-600 animate-spin" />
+              ) : (
+                <FileText className="h-4 w-4 text-indigo-600" />
+              )}
+              <span className="font-semibold text-slate-800 truncate max-w-sm">{attachedFile.name}</span>
+              <span className="text-[11px] text-slate-500">({(attachedFile.size / 1024).toFixed(1)} KB)</span>
+              {uploadSuccessMsg && (
+                <span className="text-emerald-700 font-medium flex items-center space-x-1 pl-2 border-l border-indigo-200">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  <span>{uploadSuccessMsg}</span>
+                </span>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={clearAttachment}
+              className="text-slate-400 hover:text-rose-600 p-1 rounded-md transition-colors cursor-pointer"
+              title="Remove attachment"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        )}
+
+        {uploadError && (
+          <div className="p-2.5 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-xl font-medium">
+            {uploadError}
+          </div>
+        )}
+
+        {/* Large Text Area with Integrated File Attachment button */}
         <div className="relative">
           <textarea
             id="rag-query-input"
             rows={3}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Enter a question to query your indexed documents and benchmark RAG pipelines..."
-            className="w-full bg-slate-50 text-slate-900 placeholder-slate-400 rounded-xl p-4 text-sm border border-slate-200 focus:border-indigo-500 focus:bg-white focus:outline-none transition-all resize-none shadow-inner"
-            disabled={isLoading}
+            placeholder="Type your question (e.g. text query, multi-hop question, or attach PDF/DOCX/TXT/Image below)..."
+            className="w-full bg-slate-50 text-slate-900 placeholder-slate-400 rounded-xl p-4 pr-32 pb-12 text-sm border border-slate-200 focus:border-indigo-500 focus:bg-white focus:outline-none transition-all resize-none shadow-inner"
+            disabled={isLoading || isUploadingFile}
           />
+
+          {/* Bottom actions inside textarea bar */}
+          <div className="absolute left-3 bottom-3 flex items-center space-x-2">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              accept=".pdf,.docx,.doc,.txt,.csv,.png,.jpg,.jpeg,.webp,.mp4,.mov,.mp3,.wav"
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isLoading || isUploadingFile}
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition-all cursor-pointer shadow-2xs"
+              title="Attach PDF, Word document, TXT, CSV, or Image"
+            >
+              <Paperclip className="h-3.5 w-3.5 text-indigo-600" />
+              <span>Attach File (PDF/Doc/Image)</span>
+            </button>
+          </div>
 
           <button
             type="submit"
-            disabled={isLoading || !query.trim()}
+            disabled={isLoading || !query.trim() || isUploadingFile}
             className="absolute right-3 bottom-3 flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 disabled:opacity-50 text-white font-semibold text-sm shadow-md shadow-indigo-200 transition-all cursor-pointer"
           >
             {isLoading ? (
@@ -132,7 +230,7 @@ export const QuerySection: React.FC<QuerySectionProps> = ({ onRunQuery, isLoadin
             ) : (
               <>
                 <Play className="h-4 w-4 fill-white" />
-                <span>Run Benchmark</span>
+                <span>Run Evaluation</span>
               </>
             )}
           </button>

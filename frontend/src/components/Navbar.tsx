@@ -1,9 +1,11 @@
 import React from 'react';
 import { Cpu, Database, Award, History, Layers, CheckCircle2, MessageSquare, LogOut, User } from 'lucide-react';
 
+export type NavTab = 'workspace' | 'metrics' | 'documents' | 'benchmark' | 'history';
+
 interface NavbarProps {
-  activeTab:    'chat' | 'dashboard' | 'documents' | 'benchmark' | 'history';
-  setActiveTab: (tab: 'chat' | 'dashboard' | 'documents' | 'benchmark' | 'history') => void;
+  activeTab:    NavTab;
+  setActiveTab: (tab: NavTab) => void;
   isDemoMode:   boolean;
   documentCount: number;
   userName?:    string;
@@ -11,8 +13,8 @@ interface NavbarProps {
 }
 
 const NAV_ITEMS = [
-  { id: 'chat',      label: 'Chat & Observatory', Icon: MessageSquare, activeColor: 'text-indigo-700 bg-white shadow-2xs font-bold' },
-  { id: 'dashboard', label: 'RAG Benchmark',      Icon: Cpu,           activeColor: 'text-purple-700 bg-white shadow-2xs font-bold' },
+  { id: 'workspace', label: 'Query & Answers',   Icon: MessageSquare, activeColor: 'text-indigo-700 bg-white shadow-2xs font-bold' },
+  { id: 'metrics',   label: 'Metrics & Insights', Icon: Cpu,           activeColor: 'text-purple-700 bg-white shadow-2xs font-bold' },
   { id: 'documents', label: 'Knowledge Base',     Icon: Database,      activeColor: 'text-emerald-700 bg-white shadow-2xs font-bold'},
   { id: 'benchmark', label: 'Suite Benchmarking', Icon: Award,         activeColor: 'text-amber-700 bg-white shadow-2xs font-bold'  },
   { id: 'history',   label: 'Query History',      Icon: History,       activeColor: 'text-slate-800 bg-white shadow-2xs font-bold'  },
@@ -28,7 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Brand */}
         <div
           className="flex items-center space-x-3 cursor-pointer flex-shrink-0"
-          onClick={() => setActiveTab('chat')}
+          onClick={() => setActiveTab('workspace')}
         >
           <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center shadow-xs">
             <Layers className="h-4.5 w-4.5" />

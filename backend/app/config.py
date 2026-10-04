@@ -43,7 +43,7 @@ class Settings:
     if _model_env:
         LLM_MODEL: str = _model_env
     elif LLM_PROVIDER == "groq":
-        LLM_MODEL: str = "qwen/qwen3.8-27b"
+        LLM_MODEL: str = "openai/gpt-oss-120b"
     elif LLM_PROVIDER == "gemini":
         LLM_MODEL: str = "gemini-1.5-flash"
     else:
@@ -58,12 +58,12 @@ class Settings:
         else (OPENAI_API_KEY or GEMINI_API_KEY)
     )
     LLM_BASE_URL: str = os.getenv("LLM_BASE_URL", "http://localhost:11434")
-    LLM_TIMEOUT: int = int(os.getenv("LLM_TIMEOUT", "60"))
+    LLM_TIMEOUT: int = int(os.getenv("LLM_TIMEOUT", "90"))
     
     VECTOR_DB: str = os.getenv("VECTOR_DB", "chroma")
-    TOP_K: int = int(os.getenv("TOP_K", "4"))
-    CHUNK_SIZE: int = int(os.getenv("CHUNK_SIZE", "500"))
-    CHUNK_OVERLAP: int = int(os.getenv("CHUNK_OVERLAP", "50"))
+    TOP_K: int = int(os.getenv("TOP_K", "6"))
+    CHUNK_SIZE: int = int(os.getenv("CHUNK_SIZE", "400"))
+    CHUNK_OVERLAP: int = int(os.getenv("CHUNK_OVERLAP", "80"))
     
     # Evaluation metric weights
     WEIGHT_FAITHFULNESS: float = 0.25
